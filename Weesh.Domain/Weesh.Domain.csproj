@@ -22,4 +22,10 @@
       <PackageReference Include="Scalar.AspNetCore" Version="2.16.20" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Constants\" />
+      <Folder Include="Entities\" />
+      <Folder Include="Enums\" />
+    </ItemGroup>
+
 </Project>
