@@ -38,6 +38,7 @@ public static class SeedDatabase
             Email = "admin@weesh.com",
             Password = "Admin@123",
             Name = "Administrator",
+            UserName ="admin"
         };
 
         if (await userManager.FindByEmailAsync(admin.Email) == null)
@@ -46,10 +47,12 @@ public static class SeedDatabase
             {
                 Email = admin.Email,
                 Name = admin.Name,
-                BirthDate = DateTimeOffset.Parse("1994/05/29"),
+                UserName = admin.UserName,
+                BirthDate = DateTimeOffset.UtcNow,
                 Bio = "The very first admin of this web application.",
-                CreatedAt = DateTimeOffset.Now,
-                UpdatedAt = DateTimeOffset.Now,
+                CreatedAt = DateTimeOffset.UtcNow,
+                UpdatedAt = DateTimeOffset.UtcNow,
+                EmailConfirmed =  true,
             }, admin.Password);
             if (result.Succeeded) logger.LogInformation("Admin created successfully: {UserName}", admin.Email);
             else
