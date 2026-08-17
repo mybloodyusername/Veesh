@@ -7,7 +7,7 @@ using Weesh.Infra.Configurations;
 namespace Weesh.Infra.Data;
 
 public class WeeshDbContext(DbContextOptions<WeeshDbContext> options)
-    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {

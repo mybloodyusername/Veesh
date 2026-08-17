@@ -23,6 +23,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Weesh.Core\Weesh.Core.csproj" />
+        <ProjectReference Include="..\Weesh.Domain\Weesh.Domain.csproj" />
+        <ProjectReference Include="..\Weesh.Infra\Weesh.Infra.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Controllers\" />
       <Folder Include="Exceptions\" />
     </ItemGroup>
 

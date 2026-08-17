@@ -15,23 +15,50 @@ public static class SeedDatabase
         RoleManager<IdentityRole<Guid>> roleManager)
     {
         using var scope = serviceProvider.CreateScope();
-        
+
         var context = serviceProvider.GetRequiredService<WeeshDbContext>();
 
-        foreach (var role in Enum.GetValues<UserRole>())
+        foreach (var role in Enum.GetValues<UserRole>().Select(x => x.ToString()))
         {
-            if (!await roleManager.RoleExistsAsync(nameof(role)))
+            if (!await roleManager.RoleExistsAsync(role))
             {
-                await roleManager.CreateAsync(new IdentityRole<Guid>(nameof(role)));
-                logger.LogInformation("Role created successfully: {RoleName}", nameof(role));
+                await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+                logger.LogInformation("Role created successfully: {RoleName}", role);
             }
             else
             {
-                logger.LogInformation("Role already exists: {RoleName}", nameof(role));
+                logger.LogInformation("Role already exists: {RoleName}", role);
             }
         }
-        
+
         // TODO: create admins
 
+        var admin = new
+        {
+            Email = "admin@weesh.com",
+            Password = "Admin@123",
+            Name = "Administrator",
+        };
+
+        if (await userManager.FindByEmailAsync(admin.Email) == null)
+        {
+            var result = await userManager.CreateAsync(new ApplicationUser
+            {
+                Email = admin.Email,
+                Name = admin.Name,
+                BirthDate = DateTimeOffset.Parse("1994/05/29"),
+                Bio = "The very first admin of this web application.",
+                CreatedAt = DateTimeOffset.Now,
+                UpdatedAt = DateTimeOffset.Now,
+            }, admin.Password);
+            if (result.Succeeded) logger.LogInformation("Admin created successfully: {UserName}", admin.Email);
+            else
+                throw new Exception(
+                    $"Admin creation failed: {string.Join(",", result.Errors.Select(e => e.Description))}");
+        }
+        else
+        {
+            logger.LogInformation("Admin exists: {UserName}", admin.Email);
+        }
     }
 }
