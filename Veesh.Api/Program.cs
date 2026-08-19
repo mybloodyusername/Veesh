@@ -1,5 +1,5 @@
 using Scalar.AspNetCore;
-using Weesh.Infra.Extensions;
+using Veesh.Infra.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +13,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddProblemDetails();
 // TODO: Global Exception Handler
 
-builder.Services.AddWeeshDbContext(builder.Configuration);
-builder.Services.AddWeeshIdentity(builder.Configuration);
+builder.Services.AddVeeshDbContext(builder.Configuration);
+builder.Services.AddVeeshIdentity(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCorsPolicies(builder.Configuration);
 
@@ -23,7 +23,7 @@ builder.Services.AddCorsPolicies(builder.Configuration);
 
 var app = builder.Build();
 
-await app.InitializeWeeshDbAsync();
+await app.InitializeVeeshDbAsync();
 
 if (app.Environment.IsDevelopment())
 {

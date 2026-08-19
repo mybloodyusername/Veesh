@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Weesh.Domain.Entities;
+using Veesh.Domain.Entities;
 
-namespace Weesh.Infra.Configurations;
+namespace Veesh.Infra.Configurations;
 
 public class ApplicationUserConfig : IEntityTypeConfiguration<ApplicationUser>
 {

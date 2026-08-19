@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace Weesh.Domain.Entities;
+namespace Veesh.Domain.Entities;
 
 public class ApplicationUser : IdentityUser<Guid>
 {

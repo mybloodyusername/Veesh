@@ -27,8 +27,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Weesh.Domain\Weesh.Domain.csproj"/>
-        <ProjectReference Include="..\Weesh.Core\Weesh.Core.csproj"/>
+        <ProjectReference Include="..\Veesh.Domain\Veesh.Domain.csproj"/>
+        <ProjectReference Include="..\Veesh.Core\Veesh.Core.csproj"/>
     </ItemGroup>
 
 </Project>

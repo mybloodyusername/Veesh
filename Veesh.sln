@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weesh.Api", "Weesh.Api\Weesh.Api.csproj", "{C6AB1354-342D-40AD-9031-559911C1283C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veesh.Api", "Veesh.Api\Veesh.Api.csproj", "{C6AB1354-342D-40AD-9031-559911C1283C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weesh.Domain", "Weesh.Domain\Weesh.Domain.csproj", "{0D3CC8D5-47E4-4842-A071-B71978E84591}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veesh.Domain", "Veesh.Domain\Veesh.Domain.csproj", "{0D3CC8D5-47E4-4842-A071-B71978E84591}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weesh.Infra", "Weesh.Infra\Weesh.Infra.csproj", "{7186DB67-1087-4370-8D50-FCF24076D456}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veesh.Infra", "Veesh.Infra\Veesh.Infra.csproj", "{7186DB67-1087-4370-8D50-FCF24076D456}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weesh.Core", "Weesh.Core\Weesh.Core.csproj", "{BED242B7-7E49-41A0-ABDF-AB377052B195}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veesh.Core", "Veesh.Core\Veesh.Core.csproj", "{BED242B7-7E49-41A0-ABDF-AB377052B195}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -23,9 +23,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Weesh.Core\Weesh.Core.csproj" />
-        <ProjectReference Include="..\Weesh.Domain\Weesh.Domain.csproj" />
-        <ProjectReference Include="..\Weesh.Infra\Weesh.Infra.csproj" />
+        <ProjectReference Include="..\Veesh.Core\Veesh.Core.csproj" />
+        <ProjectReference Include="..\Veesh.Domain\Veesh.Domain.csproj" />
+        <ProjectReference Include="..\Veesh.Infra\Veesh.Infra.csproj" />
     </ItemGroup>
     
     <ItemGroup>

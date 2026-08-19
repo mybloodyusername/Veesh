@@ -1,4 +1,4 @@
-namespace Weesh.Domain.Entities;
+namespace Veesh.Domain.Entities;
 
 public class BaseEntity
 {

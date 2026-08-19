@@ -1,22 +1,22 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Weesh.Domain.Entities;
-using Weesh.Domain.Enums;
+using Veesh.Domain.Entities;
+using Veesh.Domain.Enums;
 
-namespace Weesh.Infra.Data;
+namespace Veesh.Infra.Data;
 
 public static class SeedDatabase
 {
     public static async Task Initialize(
-        ILogger<WeeshDbContext> logger,
+        ILogger<VeeshDbContext> logger,
         IServiceProvider serviceProvider,
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole<Guid>> roleManager)
     {
         using var scope = serviceProvider.CreateScope();
 
-        var context = serviceProvider.GetRequiredService<WeeshDbContext>();
+        var context = serviceProvider.GetRequiredService<VeeshDbContext>();
 
         foreach (var role in Enum.GetValues<UserRole>().Select(x => x.ToString()))
         {
@@ -35,7 +35,7 @@ public static class SeedDatabase
 
         var admin = new
         {
-            Email = "admin@weesh.com",
+            Email = "admin@veesh.com",
             Password = "Admin@123",
             Name = "Administrator",
             UserName ="admin"

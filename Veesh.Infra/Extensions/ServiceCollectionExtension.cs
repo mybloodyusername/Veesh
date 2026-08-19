@@ -5,22 +5,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Weesh.Domain.Entities;
-using Weesh.Infra.Data;
+using Veesh.Domain.Entities;
+using Veesh.Infra.Data;
 
-namespace Weesh.Infra.Extensions;
+namespace Veesh.Infra.Extensions;
 
 public static class ServiceCollectionExtension
 {
     extension(IServiceCollection services)
     {
-        public void AddWeeshDbContext(IConfiguration configuration)
+        public void AddVeeshDbContext(IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<WeeshDbContext>(options => options.UseNpgsql(connectionString));
+            services.AddDbContext<VeeshDbContext>(options => options.UseNpgsql(connectionString));
         }
 
-        public void AddWeeshIdentity(IConfiguration configuration)
+        public void AddVeeshIdentity(IConfiguration configuration)
         {
             services.AddIdentityCore<ApplicationUser>(options =>
                 {
@@ -32,7 +32,7 @@ public static class ServiceCollectionExtension
                     options.User.RequireUniqueEmail = false;
                 })
                 .AddRoles<IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<WeeshDbContext>()
+                .AddEntityFrameworkStores<VeeshDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
         }

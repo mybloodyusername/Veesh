@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Weesh.Infra.Migrations
+namespace Veesh.Infra.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

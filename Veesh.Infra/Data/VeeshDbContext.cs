@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Weesh.Domain.Entities;
-using Weesh.Infra.Configurations;
+using Veesh.Domain.Entities;
+using Veesh.Infra.Configurations;
 
-namespace Weesh.Infra.Data;
+namespace Veesh.Infra.Data;
 
-public class WeeshDbContext(DbContextOptions<WeeshDbContext> options)
+public class VeeshDbContext(DbContextOptions<VeeshDbContext> options)
     : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
