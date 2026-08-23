@@ -24,10 +24,8 @@ builder.Services.AddCorsPolicies(builder.Configuration);
 
 // DI 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
-
 
 var app = builder.Build();
 
