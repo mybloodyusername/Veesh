@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Veesh.Core.Common;
 using Veesh.Core.Exceptions;
 using Veesh.Core.Interfaces;
 using Veesh.Domain.Entities;
@@ -9,6 +10,62 @@ namespace Veesh.Infra.Repositories;
 
 public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbContext context) : IUserRepository
 {
+    public async Task<Pageable<ApplicationUser>> GetAllAsync(UserQuery query, int page, int size)
+    {
+        var queryable = context.Users.AsNoTracking();
+
+        if (query.Id != null)
+        {
+            queryable = queryable.Where(q => q.Id == query.Id);
+        }
+
+        if (query.UserName != null)
+        {
+            queryable = queryable.Where(q => q.UserName!.Contains(query.UserName));
+        }
+
+        if (query.Email != null)
+        {
+            queryable = queryable.Where(q => q.Email != null && q.Email.Contains(query.Email));
+        }
+
+        if (query.PhoneNumber != null)
+        {
+            queryable = queryable.Where(q => q.PhoneNumber!.Contains(query.PhoneNumber));
+        }
+
+        if (query.Name != null)
+        {
+            queryable = queryable.Where(q => q.Name != null && q.Name.Contains(query.Name));
+        }
+
+        if (query.BirthDate != null)
+        {
+            queryable = queryable.Where(q => q.BirthDate == query.BirthDate);
+        }
+
+        if (query.CreatedAt != null)
+        {
+            queryable = queryable.Where(q => q.CreatedAt == query.CreatedAt);
+        }
+
+        if (query.UpdatedAt != null)
+        {
+            queryable = queryable.Where(q => q.UpdatedAt == query.UpdatedAt);
+        }
+
+        if (query.OrderBy != null)
+        {
+            queryable = queryable.OrderBy(q => query.OrderBy);
+        }
+
+        var total = await queryable.CountAsync();
+        var lastPage = total / size;
+        var items = await queryable.Skip((page) * size).Take(size).ToListAsync();
+
+        return new Pageable<ApplicationUser>(items, page, size, total, lastPage);
+    }
+
     public async Task<ApplicationUser?> GetUserByIdAsync(Guid id)
     {
         return await userManager.FindByIdAsync(id.ToString());
@@ -29,7 +86,7 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
         return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<ApplicationUser> Create(ApplicationUser user, string password)
+    public async Task<ApplicationUser> CreateAsync(ApplicationUser user, string password)
     {
         // if (user.UserName != null)
         // {
@@ -55,11 +112,11 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
         throw new Exception(errors);
     }
 
-    public async Task<ApplicationUser> Update(ApplicationUser user)
+    public async Task<ApplicationUser> UpdateAsync(ApplicationUser user)
     {
         var existingUser = await GetUserByIdAsync(user.Id);
         if (existingUser == null) throw new NotFoundException("User not found");
-        
+
         existingUser.UserName = user.UserName;
         existingUser.Email = user.Email;
         existingUser.PhoneNumber = user.PhoneNumber;
@@ -68,14 +125,14 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
         existingUser.ProfileImageUrl = user.ProfileImageUrl;
         existingUser.BirthDate = user.BirthDate;
         existingUser.UpdatedAt = DateTimeOffset.UtcNow;
-        
+
         var result = await userManager.UpdateAsync(existingUser);
         if (result.Succeeded) return existingUser;
         var errors = string.Join("; ", result.Errors.Select(e => e.Description));
         throw new Exception(errors);
     }
 
-    public async Task<bool> Delete(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         var existingUser = await GetUserByIdAsync(id);
         if (existingUser == null) throw new NotFoundException("User not found");

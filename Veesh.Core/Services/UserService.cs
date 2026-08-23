@@ -3,6 +3,7 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using Veesh.Core.Common;
 using Veesh.Core.DTOs.User;
 using Veesh.Core.Exceptions;
 using Veesh.Core.Interfaces;
@@ -12,6 +13,13 @@ namespace Veesh.Core.Services;
 
 public class UserService(IUserRepository userRepository, ILogger<UserService> logger)
 {
+    public async Task<Pageable<UserResponse>> GetAllAsync(UserQuery query, int page, int size)
+    {
+        var result = await userRepository.GetAllAsync(query, page, size);
+        return result.Adapt<Pageable<UserResponse>>();
+    }
+
+
     public async Task<UserResponse> GetByIdAsync(Guid id)
     {
         var result = await userRepository.GetUserByIdAsync(id);
@@ -45,7 +53,7 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
                 ProfileImageUrl = request.ProfileImageUrl,
                 BirthDate = request.BirthDate
             };
-            var newUser = await userRepository.Create(applicationUser, "abc123456");
+            var newUser = await userRepository.CreateAsync(applicationUser, "abc123456");
             return newUser.Adapt<UserResponse>();
         }
         catch (DbUpdateException e)
@@ -70,7 +78,7 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
                 ProfileImageUrl = request.ProfileImageUrl,
                 BirthDate = request.BirthDate,
             };
-            var updatedUser = await userRepository.Update(applicationUser);
+            var updatedUser = await userRepository.UpdateAsync(applicationUser);
             return updatedUser.Adapt<UserResponse>();
         }
         catch (DbUpdateException e)
@@ -84,13 +92,12 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
     {
         try
         {
-            return await userRepository.Delete(id);
+            return await userRepository.DeleteAsync(id);
         }
         catch (DbException e)
         {
             logger.LogError(e, "Failed to delete user with id {Id}", id);
             throw new ConflictException("Failed to create User");
         }
-        
     }
 }
