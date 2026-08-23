@@ -64,7 +64,7 @@ public static class ServiceCollectionExtension
                     {
                         OnMessageReceived = context =>
                         {
-                            if (context.Request.Cookies.TryGetValue("CookieShop.Token", out var token))
+                            if (context.Request.Cookies.TryGetValue("Veesh.Token", out var token))
                                 context.Token = token;
                             return Task.CompletedTask;
                         }

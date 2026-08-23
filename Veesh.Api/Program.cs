@@ -1,5 +1,9 @@
 using Scalar.AspNetCore;
+using Veesh.Core.DTOs.User;
+using Veesh.Core.Interfaces;
+using Veesh.Core.Services;
 using Veesh.Infra.Extensions;
+using Veesh.Infra.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +23,10 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCorsPolicies(builder.Configuration);
 
 // DI 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UserService>();
 
 
 var app = builder.Build();
