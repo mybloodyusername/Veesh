@@ -53,6 +53,7 @@ public static class ServiceCollectionExtension
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
                         ValidIssuer = jwtSettings.GetSection("Issuer").Value!,
                         ValidAudience = jwtSettings.GetSection("Audience").Value!,
                         ClockSkew = TimeSpan.Zero,

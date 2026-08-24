@@ -70,7 +70,7 @@ public class AuthService(
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Name, user.PhoneNumber!),
+            new(ClaimTypes.Name, user.UserName!),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
