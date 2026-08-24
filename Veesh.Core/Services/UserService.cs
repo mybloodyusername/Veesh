@@ -1,5 +1,6 @@
 using System.Data.Common;
 using Mapster;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
@@ -8,17 +9,20 @@ using Veesh.Core.DTOs.User;
 using Veesh.Core.Exceptions;
 using Veesh.Core.Interfaces;
 using Veesh.Domain.Entities;
+using Veesh.Domain.Enums;
 
 namespace Veesh.Core.Services;
 
-public class UserService(IUserRepository userRepository, ILogger<UserService> logger)
+public class UserService(
+    IUserRepository userRepository,
+    UserManager<ApplicationUser> userManager,
+    ILogger<UserService> logger)
 {
-    public async Task<Pageable<UserResponse>> GetAllAsync(UserQuery query, int page, int size)
+    public async Task<Pageable<UserResponse>> GetAllAsync(UserQuery query)
     {
-        var result = await userRepository.GetAllAsync(query, page, size);
+        var result = await userRepository.GetAllAsync(query);
         return result.Adapt<Pageable<UserResponse>>();
     }
-
 
     public async Task<UserResponse> GetByIdAsync(Guid id)
     {
@@ -63,10 +67,13 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         }
     }
 
-    public async Task<UserResponse> UpdateAsync(UpdateUserRequest request)
+    public async Task<UserResponse> UpdateAsync(UpdateUserRequest request, Guid userId, List<UserRole> roles)
     {
         try
         {
+            if (!roles.Contains(UserRole.Admin) && request.Id != userId)
+                throw new UnauthorizedAccessException("You are not authorized to update this user.");
+
             var applicationUser = new ApplicationUser
             {
                 Id = request.Id,

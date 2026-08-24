@@ -5,7 +5,7 @@ namespace Veesh.Core.Interfaces;
 
 public interface IUserRepository
 {
-    public Task<Pageable<ApplicationUser>> GetAllAsync(UserQuery query, int page, int size);
+    public Task<Pageable<ApplicationUser>> GetAllAsync(UserQuery query);
     public Task<ApplicationUser?> GetUserByIdAsync(Guid id);
     public Task<ApplicationUser?> GetUserByUsernameAsync(string username);
     public Task<ApplicationUser?> GetUserByPhoneNumberAsync(string phoneNumber);

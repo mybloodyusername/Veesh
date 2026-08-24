@@ -10,7 +10,7 @@ namespace Veesh.Infra.Repositories;
 
 public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbContext context) : IUserRepository
 {
-    public async Task<Pageable<ApplicationUser>> GetAllAsync(UserQuery query, int page, int size)
+    public async Task<Pageable<ApplicationUser>> GetAllAsync(UserQuery query)
     {
         var queryable = context.Users.AsNoTracking();
 
@@ -60,10 +60,10 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
         }
 
         var total = await queryable.CountAsync();
-        var lastPage = total / size;
-        var items = await queryable.Skip((page) * size).Take(size).ToListAsync();
+        var lastPage = total / query.Size;
+        var items = await queryable.Skip((query.Page) * query.Size).Take(query.Size).ToListAsync();
 
-        return new Pageable<ApplicationUser>(items, page, size, total, lastPage);
+        return new Pageable<ApplicationUser>(items, query.Page, query.Size, total, lastPage);
     }
 
     public async Task<ApplicationUser?> GetUserByIdAsync(Guid id)
