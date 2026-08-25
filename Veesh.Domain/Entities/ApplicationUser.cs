@@ -7,13 +7,15 @@ public class ApplicationUser : IdentityUser<Guid>
 {
     [MaxLength(64)] public string? Name { get; set; }
     
-    [MaxLength(512)] public string? Bio { get; set; }
+    [MaxLength(2048)] public string? Bio { get; set; }
 
-    [MaxLength(256)] public string? ProfileImageUrl { get; set; }
+    [MaxLength(2048)] public string? ProfileImageUrl { get; set; }
     
     public DateTimeOffset? BirthDate { get; set; }
     
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     
     public DateTimeOffset UpdatedAt { get; set; } =  DateTimeOffset.UtcNow;
+    
+    public ICollection<WishList> WishLists { get; set; } = new List<WishList>();
 }

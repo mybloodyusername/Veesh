@@ -8,4 +8,4 @@ public record RegisterRequest(
     string UserName,
     [EmailAddress] string Email,
     [MaxLength(64)] string Name,
-    [Required, MaxLength(8)] string Password);
+    [Required, MinLength(8)] string Password);
