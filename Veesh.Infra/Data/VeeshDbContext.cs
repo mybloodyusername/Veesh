@@ -17,6 +17,9 @@ public class VeeshDbContext(DbContextOptions<VeeshDbContext> options)
     {
         base.OnModelCreating(builder);
         builder.ApplyConfiguration(new ApplicationUserConfig());
+        builder.ApplyConfiguration(new WishListConfig());
+        builder.ApplyConfiguration(new WishConfig());
+        builder.ApplyConfiguration(new WishStoreUrlConfig());
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

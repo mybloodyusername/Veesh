@@ -26,6 +26,12 @@ builder.Services.AddCorsPolicies(builder.Configuration);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IWishListRepository, WishListRepository>();
+builder.Services.AddScoped<IWishRepository, WishRepository>();
+builder.Services.AddScoped<IWishStoreUrlRepository, WishStoreUrlRepository>();
+builder.Services.AddScoped<WishListService>();
+builder.Services.AddScoped<WishService>();
+builder.Services.AddScoped<WishStoreUrlService>();
 
 var app = builder.Build();
 

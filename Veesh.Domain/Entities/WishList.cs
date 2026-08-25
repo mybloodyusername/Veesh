@@ -16,5 +16,5 @@ public class WishList : BaseEntity
     public ICollection<Wish> Wishes { get; set; } = new List<Wish>();
 
     public Guid OwnerId { get; set; }
-    public required ApplicationUser Owner { get; set; }
+    public ApplicationUser? Owner { get; set; }
 }
