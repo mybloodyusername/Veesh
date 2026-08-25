@@ -40,8 +40,18 @@ public class WishListService(
     {
         try
         {
+            Guid ownerId;
+
             if (roles.Contains(UserRole.Admin))
-                throw new UnauthorizedAccessException("Admins are not allowed to create wishlists for themselves.");
+            {
+                if (request.OwnerId == null)
+                    throw new UnauthorizedAccessException("Admins are not allowed to create wishlists for themselves. Provide an OwnerId.");
+                ownerId = request.OwnerId.Value;
+            }
+            else
+            {
+                ownerId = userId;
+            }
 
             var wishList = new WishList
             {
@@ -51,7 +61,7 @@ public class WishListService(
                     ? Enum.Parse<WishlistVisibility>(request.Visibility)
                     : WishlistVisibility.Private,
                 CoverImageUrl = request.CoverImageUrl,
-                OwnerId = userId
+                OwnerId = ownerId
             };
 
             var created = await wishListRepository.CreateAsync(wishList);
