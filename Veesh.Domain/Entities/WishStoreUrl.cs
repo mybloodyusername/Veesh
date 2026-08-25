@@ -12,6 +12,10 @@ public class WishStoreUrl : BaseEntity
 
     [MaxLength(2048)] public string? ImageUrl { get; set; }
 
+    public decimal? Price { get; set; }
+
+    [MaxLength(10)] public string? Currency { get; set; }
+
     public Guid WishId { get; set; }
     public Wish? Wish { get; set; }
 }
