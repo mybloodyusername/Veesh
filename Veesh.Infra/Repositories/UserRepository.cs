@@ -88,28 +88,28 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
 
     public async Task<ApplicationUser> CreateAsync(ApplicationUser user, string password)
     {
-        // if (user.UserName != null)
-        // {
-        //     var userByUsername = await GetUserByUsernameAsync(user.UserName);
-        //     if (userByUsername == null) throw new Exception("UserName exists.");
-        // }
-        //
-        // if (user.PhoneNumber != null)
-        // {
-        //     var userByPhoneNumber = await GetUserByPhoneNumberAsync(user.PhoneNumber);
-        //     if (userByPhoneNumber == null) throw new Exception("PhoneNumber exists.");
-        // }
-        //
-        // if (user.Email != null)
-        // {
-        //     var userByEmail = await GetUserByEmailAsync(user.Email);
-        //     if (userByEmail == null) throw new Exception("Email exists.");
-        // }
+        if (user.UserName != null)
+        {
+            var userByUsername = await GetUserByUsernameAsync(user.UserName);
+            if (userByUsername == null) throw new DuplicateException("UserName exists.");
+        }
+        
+        if (user.PhoneNumber != null)
+        {
+            var userByPhoneNumber = await GetUserByPhoneNumberAsync(user.PhoneNumber);
+            if (userByPhoneNumber == null) throw new DuplicateException("PhoneNumber exists.");
+        }
+        
+        if (user.Email != null)
+        {
+            var userByEmail = await GetUserByEmailAsync(user.Email);
+            if (userByEmail == null) throw new DuplicateException("Email exists.");
+        }
 
         var userResult = await userManager.CreateAsync(user, password);
         if (userResult.Succeeded) return user;
         var errors = string.Join("; ", userResult.Errors.Select(e => e.Description));
-        throw new Exception(errors);
+        throw new ConflictException(errors);
     }
 
     public async Task<ApplicationUser> UpdateAsync(ApplicationUser user)
@@ -129,7 +129,7 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
         var result = await userManager.UpdateAsync(existingUser);
         if (result.Succeeded) return existingUser;
         var errors = string.Join("; ", result.Errors.Select(e => e.Description));
-        throw new Exception(errors);
+        throw new ConflictException(errors);
     }
 
     public async Task<bool> DeleteAsync(Guid id)

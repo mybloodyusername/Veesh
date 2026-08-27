@@ -36,15 +36,15 @@ public class UserService(
         try
         {
             var userByUsername = await userRepository.GetUserByUsernameAsync(request.UserName);
-            if (userByUsername == null) throw new Exception("UserName exists.");
+            if (userByUsername == null) throw new DuplicateException("UserName exists.");
 
             var userByPhoneNumber = await userRepository.GetUserByPhoneNumberAsync(request.PhoneNumber);
-            if (userByPhoneNumber == null) throw new Exception("PhoneNumber exists.");
+            if (userByPhoneNumber == null) throw new DuplicateException("PhoneNumber exists.");
 
             if (request.Email != null)
             {
                 var userByEmail = await userRepository.GetUserByEmailAsync(request.Email);
-                if (userByEmail == null) throw new Exception("Email exists.");
+                if (userByEmail == null) throw new DuplicateException("Email exists.");
             }
 
             var applicationUser = new ApplicationUser
