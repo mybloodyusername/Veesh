@@ -1,4 +1,5 @@
 using Scalar.AspNetCore;
+using Veesh.Api.Middleware;
 using Veesh.Core.DTOs.User;
 using Veesh.Core.Interfaces;
 using Veesh.Core.Services;
@@ -15,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddProblemDetails();
-// TODO: Global Exception Handler
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddVeeshDbContext(builder.Configuration);
 builder.Services.AddVeeshIdentity(builder.Configuration);

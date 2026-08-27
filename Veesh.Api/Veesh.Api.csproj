@@ -27,9 +27,5 @@
         <ProjectReference Include="..\Veesh.Domain\Veesh.Domain.csproj" />
         <ProjectReference Include="..\Veesh.Infra\Veesh.Infra.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Exceptions\" />
-    </ItemGroup>
 
 </Project>
