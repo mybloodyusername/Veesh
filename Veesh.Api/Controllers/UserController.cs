@@ -1,3 +1,4 @@
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace Veesh.Api.Controllers
         {
             var userId = User.GetUserId();
             var result = await userService.GetByIdAsync(userId);
-            throw new NotImplementedException();
+            return result.Adapt<UserResponse>();
         }
 
         [Authorize(Roles = nameof(UserRole.Admin))]
