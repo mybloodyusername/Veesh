@@ -96,19 +96,19 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
         if (user.UserName != null)
         {
             var userByUsername = await GetUserByUsernameAsync(user.UserName);
-            if (userByUsername == null) throw new DuplicateException("UserName exists.");
+            if (userByUsername != null) throw new DuplicateException("UserName exists.");
         }
         
         if (user.PhoneNumber != null)
         {
             var userByPhoneNumber = await GetUserByPhoneNumberAsync(user.PhoneNumber);
-            if (userByPhoneNumber == null) throw new DuplicateException("PhoneNumber exists.");
+            if (userByPhoneNumber != null) throw new DuplicateException("PhoneNumber exists.");
         }
         
         if (user.Email != null)
         {
             var userByEmail = await GetUserByEmailAsync(user.Email);
-            if (userByEmail == null) throw new DuplicateException("Email exists.");
+            if (userByEmail != null) throw new DuplicateException("Email exists.");
         }
 
         var userResult = await userManager.CreateAsync(user, password);
