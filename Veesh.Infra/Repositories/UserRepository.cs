@@ -4,6 +4,7 @@ using Veesh.Core.Common;
 using Veesh.Core.Exceptions;
 using Veesh.Core.Interfaces;
 using Veesh.Domain.Entities;
+using Veesh.Domain.Enums;
 using Veesh.Infra.Data;
 
 namespace Veesh.Infra.Repositories;
@@ -91,20 +92,20 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
         return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<ApplicationUser> CreateAsync(ApplicationUser user, string password)
+    public async Task<ApplicationUser> CreateAsync(ApplicationUser user, string password, UserRole role)
     {
         if (user.UserName != null)
         {
             var userByUsername = await GetUserByUsernameAsync(user.UserName);
             if (userByUsername != null) throw new DuplicateException("UserName exists.");
         }
-        
+
         if (user.PhoneNumber != null)
         {
             var userByPhoneNumber = await GetUserByPhoneNumberAsync(user.PhoneNumber);
             if (userByPhoneNumber != null) throw new DuplicateException("PhoneNumber exists.");
         }
-        
+
         if (user.Email != null)
         {
             var userByEmail = await GetUserByEmailAsync(user.Email);
@@ -112,9 +113,13 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
         }
 
         var userResult = await userManager.CreateAsync(user, password);
-        if (userResult.Succeeded) return user;
-        var errors = string.Join("; ", userResult.Errors.Select(e => e.Description));
-        throw new ConflictException(errors);
+        if (!userResult.Succeeded)
+            throw new ConflictException(string.Join("; ", userResult.Errors.Select(e => e.Description)));
+
+        var roleResult = await userManager.AddToRoleAsync(user, nameof(role));
+        return roleResult.Succeeded
+            ? user
+            : throw new ConflictException(string.Join("; ", roleResult.Errors.Select(e => e.Description)));
     }
 
     public async Task<ApplicationUser> UpdateAsync(ApplicationUser user)

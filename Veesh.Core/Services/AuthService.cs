@@ -11,6 +11,7 @@ using Veesh.Core.DTOs.User;
 using Veesh.Core.Exceptions;
 using Veesh.Core.Interfaces;
 using Veesh.Domain.Entities;
+using Veesh.Domain.Enums;
 
 namespace Veesh.Core.Services;
 
@@ -56,7 +57,7 @@ public class AuthService(
             Email = request.Email,
             Name = request.Name,
         };
-        var result = await userRepository.CreateAsync(newUser, request.Password);
+        var result = await userRepository.CreateAsync(newUser, request.Password, UserRole.User);
         return result.Adapt<UserResponse>();
     }
 

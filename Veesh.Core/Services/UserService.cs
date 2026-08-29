@@ -77,7 +77,7 @@ public class UserService(
         );
     }
 
-    public async Task<UserResponse> CreateAsync(CreateUserRequest request)
+    public async Task<UserResponse> CreateAsync(CreateUserRequest request, UserRole role = UserRole.User)
     {
         try
         {
@@ -103,7 +103,8 @@ public class UserService(
                 ProfileImageUrl = request.ProfileImageUrl,
                 BirthDate = request.BirthDate
             };
-            var newUser = await userRepository.CreateAsync(applicationUser, "abc123456");
+            var newUser = await userRepository.CreateAsync(applicationUser, request.Password, role);
+
             return newUser.Adapt<UserResponse>();
         }
         catch (DbUpdateException e)

@@ -38,12 +38,14 @@ public static class SeedDatabase
             Email = "admin@veesh.com",
             Password = "Admin@123",
             Name = "Administrator",
-            UserName ="admin"
+            UserName = "admin"
         };
 
-        if (await userManager.FindByEmailAsync(admin.Email) == null)
+        var adminUser = await userManager.FindByEmailAsync(admin.Email);
+
+        if (adminUser == null)
         {
-            var result = await userManager.CreateAsync(new ApplicationUser
+            adminUser = new ApplicationUser
             {
                 Email = admin.Email,
                 Name = admin.Name,
@@ -52,8 +54,9 @@ public static class SeedDatabase
                 Bio = "The very first admin of this web application.",
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow,
-                EmailConfirmed =  true,
-            }, admin.Password);
+                EmailConfirmed = true,
+            };
+            var result = await userManager.CreateAsync(adminUser, admin.Password);
             if (result.Succeeded) logger.LogInformation("Admin created successfully: {UserName}", admin.Email);
             else
                 throw new Exception(
@@ -61,7 +64,20 @@ public static class SeedDatabase
         }
         else
         {
-            logger.LogInformation("Admin exists: {UserName}", admin.Email);
+            logger.LogInformation("Admin exists: {Email}", admin.Email);
+        }
+
+        var roles = await userManager.GetRolesAsync(adminUser);
+        if (roles.Contains(nameof(UserRole.Admin)))
+            logger.LogInformation("Admin has role: {RoleName}", nameof(UserRole.Admin));
+        else
+        {
+            var result = await userManager.AddToRoleAsync(adminUser, nameof(UserRole.Admin));
+            if (result.Succeeded)
+                logger.LogInformation("Admin role assigned successfully: {Role}", UserRole.Admin);
+            else
+                throw new Exception(
+                    $"Admin role assignment failed: {string.Join(",", result.Errors.Select(e => e.Description))}");
         }
     }
 }
