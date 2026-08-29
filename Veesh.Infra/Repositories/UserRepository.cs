@@ -61,7 +61,12 @@ public class UserRepository(UserManager<ApplicationUser> userManager, VeeshDbCon
 
         var total = await queryable.CountAsync();
         var lastPage = total / query.Size;
-        var items = await queryable.Skip((query.Page) * query.Size).Take(query.Size).ToListAsync();
+
+        var items = await queryable
+            .Include(u => u.UserRoles)
+            .Skip(query.Page * query.Size)
+            .Take(query.Size)
+            .ToListAsync();
 
         return new Pageable<ApplicationUser>(items, query.Page, query.Size, total, lastPage);
     }

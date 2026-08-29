@@ -18,4 +18,6 @@ public class ApplicationUser : IdentityUser<Guid>
     public DateTimeOffset UpdatedAt { get; set; } =  DateTimeOffset.UtcNow;
     
     public ICollection<WishList> WishLists { get; set; } = new List<WishList>();
+
+    public ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } = new List<IdentityUserRole<Guid>>();
 }

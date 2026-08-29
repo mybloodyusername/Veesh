@@ -3,7 +3,6 @@ using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using Veesh.Core.Common;
 using Veesh.Core.DTOs.User;
 using Veesh.Core.Exceptions;
@@ -16,19 +15,66 @@ namespace Veesh.Core.Services;
 public class UserService(
     IUserRepository userRepository,
     UserManager<ApplicationUser> userManager,
+    RoleManager<IdentityRole<Guid>> roleManager,
     ILogger<UserService> logger)
 {
     public async Task<Pageable<UserResponse>> GetAllAsync(UserQuery query)
     {
         var result = await userRepository.GetAllAsync(query);
-        return result.Adapt<Pageable<UserResponse>>();
+
+        var roleIds = result.Items
+            .SelectMany(u => u.UserRoles)
+            .Select(ur => ur.RoleId)
+            .Distinct()
+            .ToList();
+
+        var roleDict = await roleManager.Roles
+            .Where(r => roleIds.Contains(r.Id))
+            .ToDictionaryAsync(r => r.Id, r => r.Name);
+
+        var responses = result.Items.Select(u =>
+        {
+            var roleName = u.UserRoles
+                .Select(ur => roleDict.GetValueOrDefault(ur.RoleId))
+                .FirstOrDefault();
+
+            return new UserResponse(
+                u.Id,
+                u.UserName ?? string.Empty,
+                u.PhoneNumber ?? string.Empty,
+                u.Email ?? string.Empty,
+                u.Name ?? string.Empty,
+                u.Bio ?? string.Empty,
+                u.ProfileImageUrl ?? string.Empty,
+                u.BirthDate ?? DateTimeOffset.MinValue,
+                Enum.TryParse<UserRole>(roleName, out var role) ? role : UserRole.User
+            );
+        }).ToList();
+
+        return new Pageable<UserResponse>(responses, result.Page, result.Size, result.Total, result.LastPage);
     }
 
     public async Task<UserResponse> GetByIdAsync(Guid id)
     {
         var result = await userRepository.GetUserByIdAsync(id);
         if (result == null) throw new NotFoundException("User not found.");
-        return result.Adapt<UserResponse>();
+
+        var roles = await userManager.GetRolesAsync(result);
+        var role = roles.Count > 0 && Enum.TryParse<UserRole>(roles[0], out var parsed)
+            ? parsed
+            : UserRole.User;
+
+        return new UserResponse(
+            result.Id,
+            result.UserName ?? string.Empty,
+            result.PhoneNumber ?? string.Empty,
+            result.Email ?? string.Empty,
+            result.Name ?? string.Empty,
+            result.Bio ?? string.Empty,
+            result.ProfileImageUrl ?? string.Empty,
+            result.BirthDate ?? DateTimeOffset.MinValue,
+            role
+        );
     }
 
     public async Task<UserResponse> CreateAsync(CreateUserRequest request)
