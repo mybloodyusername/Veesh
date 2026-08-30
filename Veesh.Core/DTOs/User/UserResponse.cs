@@ -11,5 +11,5 @@ public record UserResponse(
     string Bio,
     string ProfileImageUrl,
     DateTimeOffset BirthDate,
-    UserRole? Role
+    UserRole Role
     );

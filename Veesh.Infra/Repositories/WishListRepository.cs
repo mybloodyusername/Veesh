@@ -23,7 +23,7 @@ public class WishListRepository(VeeshDbContext context) : IWishListRepository
             queryable = queryable.Where(q => q.OwnerId == query.OwnerId);
 
         if (query.Visibility != null)
-            queryable = queryable.Where(q => q.Visibility.ToString() == query.Visibility);
+            queryable = queryable.Where(q => q.Visibility == query.Visibility);
 
         if (query.CreatedAt != null)
             queryable = queryable.Where(q => q.CreatedAt == query.CreatedAt);

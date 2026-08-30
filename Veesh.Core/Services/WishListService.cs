@@ -57,9 +57,7 @@ public class WishListService(
             {
                 Name = request.Name,
                 Description = request.Description,
-                Visibility = request.Visibility != null
-                    ? Enum.Parse<WishlistVisibility>(request.Visibility)
-                    : WishlistVisibility.Private,
+                Visibility = request.Visibility,
                 CoverImageUrl = request.CoverImageUrl,
                 OwnerId = ownerId
             };
@@ -90,9 +88,7 @@ public class WishListService(
                 Id = request.Id,
                 Name = request.Name,
                 Description = request.Description,
-                Visibility = request.Visibility != null
-                    ? Enum.Parse<WishlistVisibility>(request.Visibility)
-                    : WishlistVisibility.Private,
+                Visibility = request.Visibility,
                 CoverImageUrl = request.CoverImageUrl
             };
 
