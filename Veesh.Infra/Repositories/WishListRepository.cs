@@ -46,7 +46,9 @@ public class WishListRepository(VeeshDbContext context) : IWishListRepository
 
     public async Task<WishList?> GetByIdAsync(Guid id)
     {
-        return await context.WishLists.FindAsync(id);
+        return await context.WishLists
+            .Include(wl => wl.Wishes.OrderBy(w => w.Priority))
+            .FirstOrDefaultAsync(w => w.Id == id);
     }
 
     public async Task<WishList> CreateAsync(WishList wishList)

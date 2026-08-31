@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Veesh.Core.Common;
+using Veesh.Core.DTOs.Wish;
 using Veesh.Core.Exceptions;
 using Veesh.Core.Interfaces;
 using Veesh.Domain.Entities;
@@ -84,5 +85,25 @@ public class WishRepository(VeeshDbContext context) : IWishRepository
         context.Wishes.Remove(existing);
         await context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<ICollection<Wish>> GetAllWishesByWishListIdAsync(Guid wishListId)
+    {
+        return await context.Wishes
+            .Where(w => w.WishListId == wishListId)
+            .OrderBy(w => w.Priority)
+            .ToListAsync();
+    }
+
+    public async Task<ICollection<Wish>> UpdatePriorityAsync(Dictionary<Guid, int> wishPriorities, Guid wishListId)
+    {
+        var wishes = await GetAllWishesByWishListIdAsync(wishListId);
+        foreach (var wish in wishes)
+        {
+            wish.Priority = wishPriorities[wish.Id];
+        }
+
+        await context.SaveChangesAsync();
+        return wishes;
     }
 }

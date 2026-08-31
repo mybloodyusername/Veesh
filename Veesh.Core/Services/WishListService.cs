@@ -3,6 +3,7 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Veesh.Core.Common;
+using Veesh.Core.DTOs.Wish;
 using Veesh.Core.DTOs.WishList;
 using Veesh.Core.Exceptions;
 using Veesh.Core.Interfaces;
@@ -13,6 +14,7 @@ namespace Veesh.Core.Services;
 
 public class WishListService(
     IWishListRepository wishListRepository,
+    IWishRepository wishRepository,
     ILogger<WishListService> logger)
 {
     public async Task<Pageable<WishListResponse>> GetAllAsync(WishListQuery query, Guid userId, List<UserRole> roles)
@@ -45,7 +47,8 @@ public class WishListService(
             if (roles.Contains(UserRole.Admin))
             {
                 if (request.OwnerId == null)
-                    throw new UnauthorizedAccessException("Admins are not allowed to create wishlists for themselves. Provide an OwnerId.");
+                    throw new UnauthorizedAccessException(
+                        "Admins are not allowed to create wishlists for themselves. Provide an OwnerId.");
                 ownerId = request.OwnerId.Value;
             }
             else
@@ -119,6 +122,37 @@ public class WishListService(
         {
             logger.LogError(e, "Failed to delete wishlist with id {Id}", id);
             throw new ConflictException("Failed to delete WishList");
+        }
+    }
+
+    public async Task<WishListResponse> UpdateWishesOrderAsync(UpdateWishPriorityRequest request, Guid wishListId,
+        Guid userId,
+        List<UserRole> roles)
+    {
+        try
+        {
+            var wishList = await wishListRepository.GetByIdAsync(wishListId);
+            if (wishList == null) throw new NotFoundException("WishList not found.");
+            if (!roles.Contains(UserRole.Admin) && wishList.OwnerId != userId)
+                throw new UnauthorizedAccessException("You are not authorized to update wishes in this wishlist.");
+
+            var wishPriorityDictionary = request.WishesPriorities.ToDictionary(w => w.Id, w => w.Priority);
+            using var wishesEnumerator = wishList.Wishes.GetEnumerator();
+            while (wishesEnumerator.MoveNext())
+            {
+                if (!wishPriorityDictionary.ContainsKey(wishesEnumerator.Current.Id))
+                    throw new ConflictException("Not all wishes are available.");
+            }
+
+            var updatedWishes = await wishRepository.UpdatePriorityAsync(wishPriorityDictionary, wishList.Id);
+            wishList.Wishes = updatedWishes;
+
+            return wishList.Adapt<WishListResponse>();
+        }
+        catch (DbUpdateException e)
+        {
+            logger.LogError(e, "Failed to update wishes priority in wishlist with id {Id}", wishListId);
+            throw new ConflictException("Failed to update Wishes priority in WishList");
         }
     }
 }

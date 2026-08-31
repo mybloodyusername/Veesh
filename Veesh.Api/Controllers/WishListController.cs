@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Veesh.Core.Common;
+using Veesh.Core.DTOs.Wish;
 using Veesh.Core.DTOs.WishList;
 using Veesh.Core.Extensions;
 using Veesh.Core.Services;
@@ -56,6 +57,16 @@ namespace Veesh.Api.Controllers
             var roles = User.GetRoles();
             var result = await wishListService.DeleteAsync(id, userId, roles);
             return Ok(new { result });
+        }
+
+        [Authorize(Roles = nameof(UserRole.Admin) + "," + nameof(UserRole.User))]
+        [HttpPut("{id}/WishesPriority")]
+        public async Task<ActionResult<WishListResponse>> UpdateWishesPriority(
+            [FromBody] UpdateWishPriorityRequest request, [FromRoute] Guid wishListId)
+        {
+            var userId = User.GetUserId();
+            var roles = User.GetRoles();
+            return await wishListService.UpdateWishesOrderAsync(request, wishListId, userId, roles);
         }
     }
 }
