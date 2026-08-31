@@ -60,13 +60,13 @@ namespace Veesh.Api.Controllers
         }
 
         [Authorize(Roles = nameof(UserRole.Admin) + "," + nameof(UserRole.User))]
-        [HttpPut("{id}/WishesPriority")]
-        public async Task<ActionResult<WishListResponse>> UpdateWishesPriority(
-            [FromBody] UpdateWishPriorityRequest request, [FromRoute] Guid wishListId)
+        [HttpPut("{id}/WishesPriorities")]
+        public async Task<ActionResult<WishListResponse>> UpdateWishesPriorities(
+            [FromBody] UpdateWishPriorityRequest request, [FromRoute] Guid id)
         {
             var userId = User.GetUserId();
             var roles = User.GetRoles();
-            return await wishListService.UpdateWishesOrderAsync(request, wishListId, userId, roles);
+            return await wishListService.UpdateWishesPrioritiesAsync(request, id, userId, roles);
         }
     }
 }

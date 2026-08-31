@@ -125,7 +125,7 @@ public class WishListService(
         }
     }
 
-    public async Task<WishListResponse> UpdateWishesOrderAsync(UpdateWishPriorityRequest request, Guid wishListId,
+    public async Task<WishListResponse> UpdateWishesPrioritiesAsync(UpdateWishPriorityRequest request, Guid wishListId,
         Guid userId,
         List<UserRole> roles)
     {
@@ -137,12 +137,8 @@ public class WishListService(
                 throw new UnauthorizedAccessException("You are not authorized to update wishes in this wishlist.");
 
             var wishPriorityDictionary = request.WishesPriorities.ToDictionary(w => w.Id, w => w.Priority);
-            using var wishesEnumerator = wishList.Wishes.GetEnumerator();
-            while (wishesEnumerator.MoveNext())
-            {
-                if (!wishPriorityDictionary.ContainsKey(wishesEnumerator.Current.Id))
-                    throw new ConflictException("Not all wishes are available.");
-            }
+            if (!wishList.Wishes.All(w => wishPriorityDictionary.ContainsKey(w.Id)))
+                throw new ConflictException("Not all wishes are available.");
 
             var updatedWishes = await wishRepository.UpdatePriorityAsync(wishPriorityDictionary, wishList.Id);
             wishList.Wishes = updatedWishes;
