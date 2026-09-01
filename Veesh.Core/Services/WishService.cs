@@ -42,7 +42,8 @@ public class WishService(
                 .Take(query.Size)
                 .ToList();
 
-            return new Pageable<WishResponse>(items.Adapt<List<WishResponse>>(), query.Page, query.Size, total, lastPage);
+            return new Pageable<WishResponse>(items.Adapt<List<WishResponse>>(), query.Page, query.Size, total,
+                lastPage);
         }
 
         var result = await wishRepository.GetAllAsync(query);
@@ -80,7 +81,7 @@ public class WishService(
                 Title = request.Title,
                 Description = request.Description,
                 ImageUrl = request.ImageUrl,
-                Priority = request.Priority,
+                Priority = wishList.Wishes.Count + 1,
                 WishListId = request.WishListId
             };
 
@@ -113,19 +114,15 @@ public class WishService(
                 throw new NotFoundException("Target WishList not found.");
 
             if (!roles.Contains(UserRole.Admin) && targetWishList.OwnerId != userId)
-                throw new UnauthorizedAccessException("You are not authorized to move this wish to the target wishlist.");
+                throw new UnauthorizedAccessException(
+                    "You are not authorized to move this wish to the target wishlist.");
 
-            var wish = new Wish
-            {
-                Id = request.Id,
-                Title = request.Title,
-                Description = request.Description,
-                ImageUrl = request.ImageUrl,
-                Priority = request.Priority,
-                WishListId = request.WishListId
-            };
+            existing.Title = request.Title;
+            existing.Description = request.Description;
+            existing.ImageUrl = request.ImageUrl;
+            existing.WishListId = request.WishListId;
 
-            var updated = await wishRepository.UpdateAsync(wish);
+            var updated = await wishRepository.UpdateAsync(existing);
             return updated.Adapt<WishResponse>();
         }
         catch (DbUpdateException e)
