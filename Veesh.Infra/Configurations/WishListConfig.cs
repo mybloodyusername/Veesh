@@ -16,6 +16,10 @@ public class WishListConfig : IEntityTypeConfiguration<WishList>
             .WithMany(au => au.WishLists)
             .HasForeignKey(e => e.OwnerId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasMany(wl => wl.Wishes)
+            .WithOne(w => w.WishList)
+            .HasForeignKey(wl => wl.WishListId);
 
         builder.HasIndex(e => e.OwnerId);
     }

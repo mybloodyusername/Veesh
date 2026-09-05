@@ -408,7 +408,7 @@ namespace Veesh.Infra.Migrations
                         .IsRequired();
 
                     b.HasOne("Veesh.Domain.Entities.ApplicationUser", null)
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -458,6 +458,8 @@ namespace Veesh.Infra.Migrations
 
             modelBuilder.Entity("Veesh.Domain.Entities.ApplicationUser", b =>
                 {
+                    b.Navigation("UserRoles");
+
                     b.Navigation("WishLists");
                 });
 

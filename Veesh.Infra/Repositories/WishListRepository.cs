@@ -37,6 +37,7 @@ public class WishListRepository(VeeshDbContext context) : IWishListRepository
         var total = await queryable.CountAsync();
         var lastPage = total / query.Size;
         var items = await queryable
+            .Include(wl => wl.Wishes.OrderBy(w => w.Priority))
             .Skip(query.Page * query.Size)
             .Take(query.Size)
             .ToListAsync();
